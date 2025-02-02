@@ -13,10 +13,10 @@ Here's the MCB content:
 ${fileContent}
 
 Please extract exactly these fields:
-1. Invoice Number (the number that appears after "INVOICE #")
-2. Invoice Total (the amount that appears after "TOTAL PAYABLE")
-3. Invoice Fee (the amount that appears after "TOTAL FEE")
-4. Invoice Date (the date that appears after "Date")
+1. Invoice Number (figure it out by looking at the pages of the form)
+2. Invoice Total (figure it out by looking for Total, or Invoice Total)
+3. Invoice Fee (figure it out by looking for something like "Fee" at the bottom; this is often zero)
+4. Invoice Date
 
 Calculate this field:
 5. Invoice Subtotal (Invoice Total minus Invoice Fee)
@@ -27,7 +27,7 @@ Please respond in this exact JSON format:
   "invoice_total": "number - just the decimal number, no currency symbols",
   "invoice_fee": "number - just the decimal number, no currency symbols",
   "invoice_subtotal": "number - calculated as invoice_total minus invoice_fee",
-  "invoice_date": "string - the date exactly as it appears"
+  "invoice_date": "MM/DD/YY"
 }`;
 
 const response = await openai.chat.completions.create({
