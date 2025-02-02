@@ -107,13 +107,13 @@ const FileProcessor = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Parse the GPT response which is a stringified JSON
         try {
-          const gptResponse = JSON.parse(data.result);
+          const gptResponse = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
           setResult(gptResponse);
         } catch (e) {
           console.error('Error parsing GPT response:', e);
-          setResult(data);
+          console.log('Raw response:', data.result); // Added logging
+          setResult({ error: 'Could not parse response' });
         }
       }
     } catch (error) {
