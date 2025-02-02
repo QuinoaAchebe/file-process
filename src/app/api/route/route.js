@@ -1,4 +1,4 @@
-import { processInvoice } from "../APIHandler.js";
+import { processInvoice } from "../APIHandler2.js";
 
 export async function POST(request) {
   try {
