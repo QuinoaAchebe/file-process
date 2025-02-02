@@ -30,14 +30,16 @@ Please respond in this exact JSON format:
   "invoice_date": "string - the date exactly as it appears"
 }`;
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-4",
-    messages: [
-      { role: "user", content: promptText }
-    ],
-    max_tokens: 500,
-    temperature: 0 // Using 0 for more precise extraction
-  });
+const response = await openai.chat.completions.create({
+  model: "gpt-4",
+  messages: [
+    { role: "system", content: "You are a JSON-generating assistant. Only output valid JSON objects, never include explanatory text." },
+    { role: "user", content: promptText }
+  ],
+  max_tokens: 500,
+  temperature: 0,
+  response_format: { type: "json_object" }  // This enforces JSON output
+});
 
   return response.choices[0].message.content;
 }
