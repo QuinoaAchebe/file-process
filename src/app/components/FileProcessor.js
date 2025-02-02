@@ -97,7 +97,7 @@ const FileProcessor = () => {
 
       setStatus('Sending to API...');
       console.log('Sending to API...');
-      const response = await fetch('/api/process/route', {
+      const response = await fetch('/api/route', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
