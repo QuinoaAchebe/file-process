@@ -33,13 +33,11 @@ Please respond in this exact JSON format:
 const response = await openai.chat.completions.create({
   model: "gpt-4",
   messages: [
-    { role: "system", content: "You are a JSON-generating assistant. Only output valid JSON objects, never include explanatory text." },
+    { role: "system", content: "You are a JSON-generating assistant. Output only valid JSON objects with no additional text." },
     { role: "user", content: promptText }
   ],
   max_tokens: 500,
-  temperature: 0,
-  response_format: { type: "json_object" }  // This enforces JSON output
+  temperature: 0  // Remove the response_format line
 });
-
   return response.choices[0].message.content;
 }
