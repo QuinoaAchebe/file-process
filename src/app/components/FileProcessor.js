@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
@@ -17,6 +17,7 @@ const FileProcessor = () => {
     window.pdfjsWorkerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`;
   }, []);
 
+  // [Previous functions remain unchanged]
   const convertPageToImage = async (page) => {
     try {
       const viewport = page.getViewport({ scale: 2.0 });
@@ -88,7 +89,6 @@ const FileProcessor = () => {
     setStatus('Starting process...');
 
     try {
-      // Create URL for PDF viewer
       const fileUrl = URL.createObjectURL(file);
       setPdfUrl(fileUrl);
       
@@ -97,7 +97,7 @@ const FileProcessor = () => {
 
       setStatus('Sending to API...');
       console.log('Sending to API...');
-      const response = await fetch('/api/route', {
+      const response = await fetch('/api/process/route', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -108,12 +108,11 @@ const FileProcessor = () => {
       if (response.ok) {
         const data = await response.json();
         try {
-          const gptResponse = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
-          setResult(gptResponse);
+          const parsedResult = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+          setResult(parsedResult);
         } catch (e) {
-          console.error('Error parsing GPT response:', e);
-          console.log('Raw response:', data.result); // Added logging
-          setResult({ error: 'Could not parse response' });
+          console.error('Error parsing response:', e);
+          setResult(data);
         }
       }
     } catch (error) {
@@ -164,6 +163,39 @@ const FileProcessor = () => {
           
           {/* Results Section */}
           <div className="w-1/2">
+            {/* BEGIN NEW MCB ANALYSIS SECTION */}
+            {result && Object.keys(result).length > 0 && (
+              <div className="mt-4">
+                <h2 className="text-xl font-bold">Invoice Analysis:</h2>
+                <div className="mt-2 p-4 bg-gray-100 rounded">
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <span className="font-semibold">Invoice Number:</span>
+                      <span className="ml-2">{result.invoice_number}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Invoice Date:</span>
+                      <span className="ml-2">{result.invoice_date}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Invoice Total:</span>
+                      <span className="ml-2">${result.invoice_total}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Invoice Fee:</span>
+                      <span className="ml-2">${result.invoice_fee}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Invoice Subtotal:</span>
+                      <span className="ml-2">${result.invoice_subtotal}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* END NEW MCB ANALYSIS SECTION */}
+
+            {/* BEGIN OLD ANALYSIS SECTION - COMMENTED OUT
             <h2 className="text-xl font-bold mt-4">Extracted Text:</h2>
             <pre className="mt-2 p-4 bg-gray-100 rounded overflow-auto max-h-60">
               {fileContent}
@@ -209,6 +241,7 @@ const FileProcessor = () => {
                 {JSON.stringify(result, null, 2)}
               </pre>
             </div>
+            END OLD ANALYSIS SECTION */}
           </div>
         </div>
       )}
